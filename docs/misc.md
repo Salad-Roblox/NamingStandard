@@ -253,9 +253,15 @@ function join(PlaceId: number, JobId: string?): ()
 
 Joins specified game or server.
 
+### Parameters
+
+ * `PlaceId` - The Id of the place to join.
+ * `JobId` - The Id of the server to join.
+
 ### Aliases
 
  * `joingame`
+ * `joinplace`
  * `joinserver`
 
 ### Example

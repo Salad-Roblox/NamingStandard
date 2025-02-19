@@ -395,14 +395,18 @@ Set whether the given property is scriptable. Returns whether the property was s
 ## getplayer
 
 ```lua
-function getplayer(name: string?): Instance
+function getplayer(name: string?): Player
 ```
 
 Gets player from name, or LocalPlayer if no name is provided.
 
+### Parameters
+
+ * `name` - Name of the player to get.
+
 ### Aliases   
 
- * `getlocalplayer` (sorta)   
+ * `getlocalplayer` - Doesn't take any parameters.   
 
 ### Example
 
@@ -415,10 +419,12 @@ getplayer():Kick("Coolio was too cool")
 ## getplayers
 
 ```lua
-function getplayers(): { [string]: Instance }
+function getplayers(): { [string]: Player }
 ```
 
 Returns all players in current game.
+
+This is useful when you dont want to do `for _, x in pairs(game:GetService("Players"):GetPlayers()) do local i = x.Name`.
 
 ### Example
 
@@ -440,10 +446,15 @@ print("There are currently "..tostring(playerAmount).." players in your lobby.")
 ## runanimation
 
 ```lua
-function runanimation(animationId, player: Instance?): ()
+function runanimation(animationId, player: Player?): ()
 ```
 
 Plays an animation on the chosen player.
+
+### Parameters
+
+ * `animationId` - The Id of the animation to run.
+ * `player` - The player to inflict the animation on, defaults to LocalPlayer.
 
 ### Aliases   
 

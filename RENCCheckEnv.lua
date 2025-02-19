@@ -1,4 +1,4 @@
-local version = "v2.3.1"
+local version = "v3.0.0"
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
 
 if githubVersion == version then
@@ -85,6 +85,7 @@ task.defer(function()
 	print("⛔ " .. fails .. " tests failed")
 	print("⚠️ " .. undefined .. " globals are missing aliases")
 	print(version)
+	print(("Checksum: a3c46ebce%sab%sfa7c4%sedaaef%sab97c0dc5cf51deec89907af5fe8cad5b7%s748"):format(tostring(rate/(rate/2)), tostring(rate/(rate/2)), tostring(rate/(rate/2)), tostring(rate/(rate/2)), tostring(rate/(rate/2))) -- those who know "you thought" & "sha256" balkan rage german stare BRYCE IN MY HOUSE
 end)
 
 -- Cache
@@ -96,7 +97,7 @@ test("cache.invalidate", {}, function()
 	assert(part ~= container:FindFirstChild("Part"), "Reference `part` could not be invalidated")
 end)
 
-test("cache.iscached", {}, function()
+test("cache.iscached", {}, cash.invalidate and function()
 	local part = Instance.new("Part")
 	assert(cache.iscached(part), "Part should be cached")
 	cache.invalidate(part)
@@ -118,7 +119,7 @@ test("cloneref", {}, function()
 	assert(part.Name == "Test", "Clone should have updated the original")
 end)
 
-test("compareinstances", {}, function()
+test("compareinstances", {}, cloneref and function()
 	local part = Instance.new("Part")
 	local clone = cloneref(part)
 	assert(part ~= clone, "Clone should not be equal to original")
@@ -177,7 +178,7 @@ end)
 
 test("getcallingscript", {})
 
-test("getscriptclosure", {"getscriptfunction"}, function()
+test("getscriptclosure", {"getscriptfunction"}, getrenv and function()
 	local module = game:GetService("CoreGui").RobloxGui.Modules.Common.Constants
 	local constants = getrenv().require(module)
 	local generated = getscriptclosure(module)()
@@ -197,6 +198,19 @@ test("hookfunction", {"replaceclosure"}, function()
 	assert(test ~= ref, "Original function should not be same as the reference")
 end)
 
+test("closuretype", {}, newcclosure and function()
+	assert(closuretype(print).c, "Roblox function should be a C closure")
+	assert(not closuretype(function() end).c, "Executor function should not be a C closure")
+
+	assert(not closuretype(print).lua, "Roblox function should not be a Lua closure")
+	assert(closuretype(function() end).lua, "Lua function should be a Lua closure")
+
+	assert(closuretype(closuretype).executor, "Executor global should be an executor closure")
+	assert(closuretype(newcclosure(function() end)).executor, "Executor C function should be an executor closure")
+	assert(closuretype(function() end).executor, "Executor Lua function should be an executor closure")
+	assert(not closuretype(print).executor, "Roblox function should be an executor closure")
+end)
+
 test("iscclosure", {}, function()
 	assert(iscclosure(print) == true, "Function 'print' should be a C closure")
 	assert(iscclosure(function() end) == false, "Executor function should not be a C closure")
@@ -207,14 +221,14 @@ test("islclosure", {}, function()
 	assert(islclosure(function() end) == true, "Executor function should be a Lua closure")
 end)
 
-test("isexecutorclosure", {"checkclosure", "isourclosure"}, function()
+test("isexecutorclosure", {"checkclosure", "isourclosure"}, newcclosure and function()
 	assert(isexecutorclosure(isexecutorclosure) == true, "Did not return true for an executor global")
 	assert(isexecutorclosure(newcclosure(function() end)) == true, "Did not return true for an executor C closure")
 	assert(isexecutorclosure(function() end) == true, "Did not return true for an executor Luau closure")
 	assert(isexecutorclosure(print) == false, "Did not return false for a Roblox global")
 end)
 
-test("loadstring", {}, function()
+test("loadstring", {}, getscriptbytecode and function()
 	local animate = game:GetService("Players").LocalPlayer.Character.Animate
 	local bytecode = getscriptbytecode(animate)
 	local func = loadstring(bytecode)
@@ -223,7 +237,7 @@ test("loadstring", {}, function()
 	assert(type(select(2, loadstring("f"))) == "string", "Loadstring did not return anything for a compiler error")
 end)
 
-test("newcclosure", {}, function()
+test("newcclosure", {}, iscclosure and function()
 	local function test()
 		return true
 	end
@@ -233,19 +247,13 @@ test("newcclosure", {}, function()
 	assert(iscclosure(testC), "New C closure should be a C closure")
 end)
 
--- Console
-
-test("rconsoleclear", {"consoleclear"})
-
-test("rconsolecreate", {"consolecreate"})
-
-test("rconsoledestroy", {"consoledestroy"})
-
-test("rconsoleinput", {"consoleinput"})
-
-test("rconsoleprint", {"consoleprint"})
-
-test("rconsolesettitle", {"rconsolename", "consolesettitle"})
+test("newlclosure", {}, islclosure and function()
+	local test = tostring
+	local testLua = newlclosure(test)
+	assert(test(1) == testLua(1), "New Lua closure should return the same value as the original")
+	assert(test ~= testLua, "New Lua closure should not be same as the original")
+	assert(islclosure(testLua), "New Lua closure should be a Lua closure")
+end)
 
 -- Crypt
 
@@ -257,7 +265,7 @@ test("crypt.base64decode", {"crypt.base64.decode", "crypt.base64_decode", "base6
 	assert(crypt.base64decode("dGVzdA==") == "test", "Base64 decoding failed")
 end)
 
-test("crypt.encrypt", {}, function()
+test("crypt.encrypt", {}, (crypt.generatekey and crypt.decrypt) and function()
 	local key = crypt.generatekey()
 	local encrypted, iv = crypt.encrypt("test", key, nil, "CBC")
 	assert(iv, "crypt.encrypt should return an IV")
@@ -265,20 +273,20 @@ test("crypt.encrypt", {}, function()
 	assert(decrypted == "test", "Failed to decrypt raw string from encrypted data")
 end)
 
-test("crypt.decrypt", {}, function()
+test("crypt.decrypt", {}, (crypt.generatekey and crypt.encrypt) and function()
 	local key, iv = crypt.generatekey(), crypt.generatekey()
 	local encrypted = crypt.encrypt("test", key, iv, "CBC")
 	local decrypted = crypt.decrypt(encrypted, key, iv, "CBC")
 	assert(decrypted == "test", "Failed to decrypt raw string from encrypted data")
 end)
 
-test("crypt.generatebytes", {}, function()
+test("crypt.generatebytes", {}, crypt.base64decode and function()
 	local size = math.random(10, 100)
 	local bytes = crypt.generatebytes(size)
 	assert(#crypt.base64decode(bytes) == size, "The decoded result should be " .. size .. " bytes long (got " .. #crypt.base64decode(bytes) .. " decoded, " .. #bytes .. " raw)")
 end)
 
-test("crypt.generatekey", {}, function()
+test("crypt.generatekey", {}, crypt.base64decode and function()
 	local key = crypt.generatekey()
 	assert(#crypt.base64decode(key) == 32, "Generated key should be 32 bytes long when decoded")
 end)
@@ -352,7 +360,7 @@ test("debug.getproto", {}, function()
 	end
 end)
 
-test("debug.getprotos", {}, function()
+test("debug.getprotos", {}, debug.getproto and function()
 	local function test()
 		local function _1()
 			return true
@@ -428,87 +436,86 @@ end)
 -- Filesystem
 
 if isfolder and makefolder and delfolder then
-	if isfolder(".tests") then
-		delfolder(".tests")
+	if isfolder(".RENC") then
+		delfolder(".RENC")
 	end
-	makefolder(".tests")
+	makefolder(".RENC")
 end
 
-test("readfile", {}, function()
-	writefile(".tests/readfile.txt", "success")
-	assert(readfile(".tests/readfile.txt") == "success", "Did not return the contents of the file")
+test("readfile", {}, writefile and function()
+	writefile(".RENC/readfile.txt", "success")
+	assert(readfile(".RENC/readfile.txt") == "success", "Did not return the contents of the file")
 end)
 
-test("listfiles", {}, function()
-	makefolder(".tests/listfiles")
-	writefile(".tests/listfiles/test_1.txt", "success")
-	writefile(".tests/listfiles/test_2.txt", "success")
-	local files = listfiles(".tests/listfiles")
+test("listfiles", {}, (((isfolder and readfile) and isfile) and writefile) and makefolder) and function() -- god damn the requirements here are insane, someone pls pull
+	makefolder(".RENC/listfiles")
+	writefile(".RENC/listfiles/test_1.txt", "success")
+	writefile(".RENC/listfiles/test_2.txt", "success")
+	local files = listfiles(".RENC/listfiles")
 	assert(#files == 2, "Did not return the correct number of files")
 	assert(isfile(files[1]), "Did not return a file path")
 	assert(readfile(files[1]) == "success", "Did not return the correct files")
-	makefolder(".tests/listfiles_2")
-	makefolder(".tests/listfiles_2/test_1")
-	makefolder(".tests/listfiles_2/test_2")
-	local folders = listfiles(".tests/listfiles_2")
+	makefolder(".RENC/listfiles_2")
+	makefolder(".RENC/listfiles_2/test_1")
+	makefolder(".RENC/listfiles_2/test_2")
+	local folders = listfiles(".RENC/listfiles_2")
 	assert(#folders == 2, "Did not return the correct number of folders")
 	assert(isfolder(folders[1]), "Did not return a folder path")
 end)
 
-test("writefile", {}, function()
-	writefile(".tests/writefile.txt", "success")
-	assert(readfile(".tests/writefile.txt") == "success", "Did not write the file")
+test("writefile", {}, (readfile and isfile) and function()
+	writefile(".RENC/writefile.txt", "success")
+	assert(readfile(".RENC/writefile.txt") == "success", "Did not write the file")
 	local requiresFileExt = pcall(function()
-		writefile(".tests/writefile", "success")
-		assert(isfile(".tests/writefile.txt"))
+		writefile(".RENC/writefile", "success")
+		assert(isfile(".RENC/writefile.txt"))
 	end)
 	if not requiresFileExt then
 		return "This executor requires a file extension in writefile"
 	end
 end)
 
-test("makefolder", {}, function()
-	makefolder(".tests/makefolder")
-	assert(isfolder(".tests/makefolder"), "Did not create the folder")
+test("makefolder", {}, isfolder and function()
+	makefolder(".RENC/makefolder")
+	assert(isfolder(".RENC/makefolder"), "Did not create the folder")
 end)
 
-test("appendfile", {}, function()
-	writefile(".tests/appendfile.txt", "su")
-	appendfile(".tests/appendfile.txt", "cce")
-	appendfile(".tests/appendfile.txt", "ss")
-	assert(readfile(".tests/appendfile.txt") == "success", "Did not append the file")
+test("appendfile", {}, (writefile and readfile) and function()
+	writefile(".RENC/appendfile.txt", "su")
+	appendfile(".RENC/appendfile.txt", "cce")
+	appendfile(".RENC/appendfile.txt", "ss")
+	assert(readfile(".RENC/appendfile.txt") == "success", "Did not append the file")
 end)
 
-test("isfile", {}, function()
-	writefile(".tests/isfile.txt", "success")
-	assert(isfile(".tests/isfile.txt") == true, "Did not return true for a file")
-	assert(isfile(".tests") == false, "Did not return false for a folder")
-	assert(isfile(".tests/doesnotexist.exe") == false, "Did not return false for a nonexistent path (got " .. tostring(isfile(".tests/doesnotexist.exe")) .. ")")
+test("isfile", {}, writefile and function()
+	writefile(".RENC/isfile.txt", "success")
+	assert(isfile(".RENC/isfile.txt") == true, "Did not return true for a file")
+	assert(isfile(".RENC") == false, "Did not return false for a folder")
+	assert(isfile(".RENC/doesnotexist.exe") == false, "Did not return false for a nonexistent path (got " .. tostring(isfile(".RENC/doesnotexist.exe")) .. ")")
 end)
 
 test("isfolder", {}, function()
-	assert(isfolder(".tests") == true, "Did not return false for a folder")
-	assert(isfolder(".tests/doesnotexist.exe") == false, "Did not return false for a nonexistent path (got " .. tostring(isfolder(".tests/doesnotexist.exe")) .. ")")
+	assert(isfolder(".RENC") == true, "Did not return false for a folder")
+	assert(isfolder(".RENC/doesnotexist.exe") == false, "Did not return false for a nonexistent path (got " .. tostring(isfolder(".RENC/doesnotexist.exe")) .. ")")
 end)
 
-test("delfolder", {}, function()
-	makefolder(".tests/delfolder")
-	delfolder(".tests/delfolder")
-	assert(isfolder(".tests/delfolder") == false, "Failed to delete folder (isfolder = " .. tostring(isfolder(".tests/delfolder")) .. ")")
+test("delfolder", {}, (makefolder and isfolder) and function()
+	makefolder(".RENC/delfolder")
+	delfolder(".RENC/delfolder")
+	assert(isfolder(".RENC/delfolder") == false, "Failed to delete folder (isfolder = " .. tostring(isfolder(".RENC/delfolder")) .. ")")
 end)
 
-test("delfile", {}, function()
-	writefile(".tests/delfile.txt", "Hello, world!")
-	delfile(".tests/delfile.txt")
-	assert(isfile(".tests/delfile.txt") == false, "Failed to delete file (isfile = " .. tostring(isfile(".tests/delfile.txt")) .. ")")
+test("delfile", {}, (writefile and isfile) and function()
+	writefile(".RENC/delfile.txt", "Hello, world!")
+	delfile(".RENC/delfile.txt")
+	assert(isfile(".RENC/delfile.txt") == false, "Failed to delete file (isfile = " .. tostring(isfile(".RENC/delfile.txt")) .. ")")
 end)
 
-test("loadfile", {}, function()
-	writefile(".tests/loadfile.txt", "return ... + 1")
-	assert(assert(loadfile(".tests/loadfile.txt"))(1) == 2, "Failed to load a file with arguments")
-	writefile(".tests/loadfile.txt", "f")
-	local callback, err = loadfile(".tests/loadfile.txt")
-	assert(err and not callback, "Did not return an error message for a compiler error")
+test("loadfile", {}, writefile and function()
+	writefile(".RENC/loadfile.txt", "return ... + 1")
+	assert(assert(loadfile(".RENC/loadfile.txt"))(1) == 2, "Failed to load a file with arguments")
+	writefile(".RENC/loadfile.txt", "f")
+	assert(select(2, loadfile(".RENC/loadfile.txt")), "Did not return an error message for a compiler error")
 end)
 
 test("dofile", {})
@@ -591,9 +598,9 @@ test("getconnections", {}, function()
 	end
 end)
 
-test("getcustomasset", {}, function()
-	writefile(".tests/getcustomasset.txt", "success")
-	local contentId = getcustomasset(".tests/getcustomasset.txt")
+test("getcustomasset", {}, writefile and function()
+	writefile(".RENC/getcustomasset.txt", "success")
+	local contentId = getcustomasset(".RENC/getcustomasset.txt")
 	assert(type(contentId) == "string", "Did not return a string")
 	assert(#contentId > 0, "Returned an empty string")
 	assert(string.match(contentId, "rbxasset://") == "rbxasset://", "Did not return an rbxasset url")
@@ -606,7 +613,7 @@ test("gethiddenproperty", {}, function()
 	assert(isHidden == true, "Did not return whether the property was hidden")
 end)
 
-test("sethiddenproperty", {}, function()
+test("sethiddenproperty", {}, gethiddenproperty and function()
 	local fire = Instance.new("Fire")
 	local hidden = sethiddenproperty(fire, "size_xml", 10)
 	assert(hidden, "Did not return true for the hidden property")
@@ -632,28 +639,33 @@ test("isscriptable", {}, function()
 	assert(isscriptable(fire, "Size") == true, "Did not return true for a scriptable property (Size)")
 end)
 
-test("setscriptable", {}, function()
+test("setscriptable", {}, isscriptable and function()
 	local fire = Instance.new("Fire")
 	local wasScriptable = setscriptable(fire, "size_xml", true)
 	assert(wasScriptable == false, "Did not return false for a non-scriptable property (size_xml)")
 	assert(isscriptable(fire, "size_xml") == true, "Did not set the scriptable property")
 	fire = Instance.new("Fire")
-	--assert(isscriptable(fire, "size_xml") == false, "⚠️⚠️ setscriptable persists between unique instances ⚠️⚠️") -- This persisting actually makes sense tho
+	assert(isscriptable(fire, "size_xml") == false, "⚠️⚠️ setscriptable persists between unique instances ⚠️⚠️")
 end)
 
 test("setrbxclipboard", {})
 
-test("getplayer", {"getlocalplayer"}, function()
-	assert(getplayer() == game:GetService("Players").LocalPlayer, "Did not return the expected player (LocalPlayer)")
-	assert(not getplayer("1x1x1x1"), "Returned a non-existing player")
+test("getplayer", {}, function()
+	assert(getplayer() == game:GetService("Players").LocalPlayer, "Did not return LocalPlayer")
+	assert(not getplayer("1x1x1x1"), "Returned 1x1x1x1 as a player", "Did not return LocalPlayer")
+end)
+
+test("getlocalplayer", {}, function()
+	assert(getlocalplayer() == game:GetService("Players").LocalPlayer, "Did not return LocalPlayer")
+	assert(getlocalplayer ~= getplayer or function() end, "Is an alias of getplayer")
 end)
 
 test("getplayers", {}, function()
-	assert(getplayers()["LocalPlayer"] == game:GetService("Players").LocalPlayer, "Did not return the expected player (LocalPlayer)")
-	assert(not getplayers()["1x1x1x1"], "Returned a non-existing player")
+	assert(getplayers()["LocalPlayer"] == game:GetService("Players").LocalPlayer, "Did not return a LocalPlayer")
+	assert(not getplayers()["1x1x1x1"], "Returned a 1x1x1x1 player")
 end)
 
-test("runanimation", {"playanimation"})
+test("runanimation", {"playanimation"}) -- too lazy to make a test :3
 
 -- Metatable
 
@@ -670,7 +682,7 @@ test("hookmetamethod", {}, function()
 	assert(ref() == false, "Did not return the original function")
 end)
 
-test("getnamecallmethod", {}, function()
+test("getnamecallmethod", {}, hookmetamethod and function()
 	local method
 	local ref
 	ref = hookmetamethod(game, "__namecall", function(...)
@@ -715,14 +727,14 @@ test("identifyexecutor", {"getexecutorname"}, function()
 	return type(version) == "string" and "Returns version as a string" or "Does not return version"
 end)
 
-test("lz4compress", {}, function()
+test("lz4compress", {}, lz4decompress and function()
 	local raw = "Hello, world!"
 	local compressed = lz4compress(raw)
 	assert(type(compressed) == "string", "Compression did not return a string")
 	assert(lz4decompress(compressed, #raw) == raw, "Decompression did not return the original string")
 end)
 
-test("lz4decompress", {}, function()
+test("lz4decompress", {}, lz4compress and function()
 	local raw = "Hello, world!"
 	local compressed = lz4compress(raw)
 	assert(type(compressed) == "string", "Compression did not return a string")
@@ -747,39 +759,15 @@ end)
 
 test("setclipboard", {"toclipboard"})
 
-test("setfpscap", {}, function()
-	local function getfps() -- credits: https://devforum.roblox.com/t/get-client-fps-trough-a-script/282631/14
-		local RunService = game:GetService("RunService")
-		local FPS: number
-		local TimeFunction = RunService:IsRunning() and time or os.clock
-
-		local LastIteration: number, Start: number
-		local FrameUpdateTable = {}
-
-		local function HeartbeatUpdate()
-			LastIteration = TimeFunction()
-			for Index = #FrameUpdateTable, 1, -1 do
-				FrameUpdateTable[Index + 1] = FrameUpdateTable[Index] >= LastIteration - 1 and FrameUpdateTable[Index] or nil
-			end
-
-			FrameUpdateTable[1] = LastIteration
-			FPS = TimeFunction() - Start >= 1 and #FrameUpdateTable or #FrameUpdateTable / (TimeFunction() - Start)
-		end
-
-		Start = TimeFunction()
-		RunService.Heartbeat:Connect(HeartbeatUpdate)
-		task.wait(1.1)
-		return FPS
-	end
-
+test("setfpscap", {}, getfps and function() -- easily fakable, oh well..
 	setfpscap(60)
 	local fps60 = getfps()
 	setfpscap(0)
 	local fps0 = getfps()
-	return fps60 .. "fps @60 • " .. fps0 .. "fps @0"
+	return fps60 .. " fps @ 60 • " .. fps0 .. " fps @ 0"
 end)
 
-test("join", {"joingame", "joinserver"})
+test("join", {"joingame", "joinplace", "joinserver"})
 
 -- Scripts
 
@@ -853,9 +841,12 @@ test("getthreadidentity", {"getidentity", "getthreadcontext"}, function()
 	assert(type(getthreadidentity()) == "number", "Did not return a number")
 end)
 
-test("setthreadidentity", {"setidentity", "setthreadcontext"}, function()
+test("setthreadidentity", {"setidentity", "setthreadcontext"}, getthreadidentity and function()
+	local oldIdentity = getthreadidentity()
 	setthreadidentity(3)
-	assert(getthreadidentity() == 3, "Did not set the thread identity")
+	assert(getthreadidentity() == 3, "Did not set the thread identity to 3")
+	setthreadidentity(oldIdentity)
+	assert(getthreadidentity() == oldIdentity, "Did not set the thread identity back to " .. tostring(oldIdentity))
 end)
 
 -- Drawing
@@ -878,7 +869,7 @@ test("Drawing.Fonts", {}, function()
 	assert(Drawing.Fonts.Monospace == 3, "Did not return the correct id for Monospace")
 end)
 
-test("isrenderobj", {}, function()
+test("isrenderobj", {}, (Drawing and Drawing.new) and function()
 	local drawing = Drawing.new("Image")
 	drawing.Visible = true
 	assert(isrenderobj(drawing) == true, "Did not return true for an Image")

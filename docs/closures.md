@@ -4,6 +4,31 @@ The **closure** functions are used to create, identify, and interact with Luau c
 
 ---
 
+## closuretype
+
+```lua
+function closuretype(func: function): table
+```
+
+Returns what closure type `func` is.
+
+Types are: "lua" ("l" as alias), "c", and "executor" ("e" and "exec" as aliases).
+
+### Parameters
+
+ * `func` - The function to check.
+
+### Example
+
+```lua
+-- Example doesn't have aliases, send a pull request!!1!11
+closuretype(closuretype) -- {"lua": false, "c": true?, "executor": true}
+closuretype(print) -- {"lua": false, "c": true, "executor": false}
+closuretype(function() end) -- {"lua": true, "c": false, "executor": true}
+```
+
+---
+
 ## checkcaller
 
 ```lua
@@ -268,4 +293,30 @@ local bar = newcclosure(foo)
 
 print(iscclosure(foo)) --> false
 print(iscclosure(bar)) --> true
+```
+
+---
+
+## newlclosure
+
+```lua
+function newlclosure<T>(func: T): T
+```
+
+Returns a Lua closure that wraps `func`. The result is functionally identical to `func`, but identifies as a Lua closure, and may have different metadata.
+
+This is useful for.. uhh.. idk.
+
+### Parameters
+
+ * `func` - The function to wrap.
+
+### Example
+
+```lua
+local foo = print
+local bar = newlclosure(foo)
+
+print(islclosure(foo)) --> false
+print(islclosure(bar)) --> true
 ```
