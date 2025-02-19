@@ -1,4 +1,4 @@
-local version = "v3.0.0"
+local version = "v3.0.1"
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
 
 if githubVersion == version then
@@ -85,7 +85,7 @@ task.defer(function()
 	print("⛔ " .. fails .. " tests failed")
 	print("⚠️ " .. undefined .. " globals are missing aliases")
 	print(version)
-	print(("Checksum: a3c46ebce%sab%sfa7c4%sedaaef%sab97c0dc5cf51deec89907af5fe8cad5b7%s748"):format(tostring(rate/(rate/2)), tostring(rate/(rate/2)), tostring(rate/(rate/2)), tostring(rate/(rate/2)), tostring(rate/(rate/2))) -- those who know "you thought" & "sha256" balkan rage german stare BRYCE IN MY HOUSE
+	print(("Checksum: a3c46ebce%sab%sfa7c4%sedaaef%sab97c0dc5cf51deec89907af5fe8cad5b7%s748"):format(tostring(rate/(rate/2)), tostring(rate/(rate/2)), tostring(rate/(rate/2)), tostring(rate/(rate/2)), tostring(rate/(rate/2)))) -- those who know "you thought" & "sha256" balkan rage german stare BRYCE IN MY HOUSE
 end)
 
 -- Cache
@@ -97,7 +97,7 @@ test("cache.invalidate", {}, function()
 	assert(part ~= container:FindFirstChild("Part"), "Reference `part` could not be invalidated")
 end)
 
-test("cache.iscached", {}, cash.invalidate and function()
+test("cache.iscached", {}, cache.invalidate and function()
 	local part = Instance.new("Part")
 	assert(cache.iscached(part), "Part should be cached")
 	cache.invalidate(part)
@@ -447,7 +447,15 @@ test("readfile", {}, writefile and function()
 	assert(readfile(".RENC/readfile.txt") == "success", "Did not return the contents of the file")
 end)
 
-test("listfiles", {}, (((isfolder and readfile) and isfile) and writefile) and makefolder) and function() -- god damn the requirements here are insane, someone pls pull
+local run = true
+local requirements = {"isfolder", "readfile", "isfile", "writefile", "makefolder"} -- god damn the requirements here are insane, someone pls pull
+for _, x in pairs(requirements) do
+    if not getgenv()[x] then
+        run = false
+        break
+    end
+end
+test("listfiles", {}, run and function()
 	makefolder(".RENC/listfiles")
 	writefile(".RENC/listfiles/test_1.txt", "success")
 	writefile(".RENC/listfiles/test_2.txt", "success")
