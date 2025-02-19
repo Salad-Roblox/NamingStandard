@@ -1,4 +1,4 @@
-local version = "v3.0.1"
+local version = "v3.0.2"
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
 
 if githubVersion == version then
@@ -179,11 +179,11 @@ end)
 test("getcallingscript", {})
 
 test("getscriptclosure", {"getscriptfunction"}, getrenv and function()
-	local module = game:GetService("CoreGui").RobloxGui.Modules.Common.Constants
-	local constants = getrenv().require(module)
+	local module = game:GetService("CorePackages").Packages.LazyRequire
+	local lazyModule = getrenv().require(module)
 	local generated = getscriptclosure(module)()
-	assert(constants ~= generated, "Generated module should not match the original")
-	assert(shallowEqual(constants, generated), "Generated constant table should be shallow equal to the original")
+	assert(lazyModule ~= generated, "Generated module should not match the original")
+	assert(shallowEqual(lazyModule, generated), "Generated module should be shallow equal to the original")
 end)
 
 test("hookfunction", {"replaceclosure"}, function()
@@ -229,7 +229,7 @@ test("isexecutorclosure", {"checkclosure", "isourclosure"}, newcclosure and func
 end)
 
 test("loadstring", {}, getscriptbytecode and function()
-	local animate = game:GetService("Players").LocalPlayer.Character.Animate
+	local animate = game:GetService("Players").LocalPlayer.PlayerScripts.RbxCharacterSounds.AtomicBinding
 	local bytecode = getscriptbytecode(animate)
 	local func = loadstring(bytecode)
 	assert(type(func) ~= "function", "Luau bytecode should not be loadable!")
@@ -812,13 +812,13 @@ test("getrunningscripts", {}, function()
 end)
 
 test("getscriptbytecode", {"dumpstring"}, function()
-	local animate = game:GetService("Players").LocalPlayer.Character.Animate
+	local animate = game:GetService("Players").LocalPlayer.PlayerScripts.RbxCharacterSounds.AtomicBinding
 	local bytecode = getscriptbytecode(animate)
 	assert(type(bytecode) == "string", "Did not return a string for Character.Animate (a " .. animate.ClassName .. ")")
 end)
 
 test("getscripthash", {}, function()
-	local animate = game:GetService("Players").LocalPlayer.Character.Animate:Clone()
+	local animate = game:GetService("Players").LocalPlayer.PlayerScripts.RbxCharacterSounds.AtomicBinding:Clone()
 	local hash = getscripthash(animate)
 	local source = animate.Source
 	animate.Source = "print('Hello, world!')"
@@ -839,7 +839,7 @@ test("getscripts", {}, function()
 end)
 
 test("getsenv", {}, function()
-	local animate = game:GetService("Players").LocalPlayer.Character.Animate
+	local animate = game:GetService("Players").LocalPlayer.PlayerScripts.RbxCharacterSounds.AtomicBinding
 	local env = getsenv(animate)
 	assert(type(env) == "table", "Did not return a table for Character.Animate (a " .. animate.ClassName .. ")")
 	assert(env.script == animate, "The script global is not identical to Character.Animate")
