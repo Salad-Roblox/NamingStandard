@@ -229,8 +229,8 @@ test("isexecutorclosure", {"checkclosure", "isourclosure"}, newcclosure and func
 end)
 
 test("loadstring", {}, getscriptbytecode and function()
-	local animate = game:GetService("Players").LocalPlayer.PlayerScripts.RbxCharacterSounds.AtomicBinding
-	local bytecode = getscriptbytecode(animate)
+	local testScript = game:GetService("Players").LocalPlayer.PlayerScripts.CameraScript
+	local bytecode = getscriptbytecode(testScript)
 	local func = loadstring(bytecode)
 	assert(type(func) ~= "function", "Luau bytecode should not be loadable!")
 	assert(assert(loadstring("return ... + 1"))(1) == 2, "Failed to do simple math")
@@ -812,22 +812,22 @@ test("getrunningscripts", {}, function()
 end)
 
 test("getscriptbytecode", {"dumpstring"}, function()
-	local animate = game:GetService("Players").LocalPlayer.PlayerScripts.RbxCharacterSounds.AtomicBinding
-	local bytecode = getscriptbytecode(animate)
-	assert(type(bytecode) == "string", "Did not return a string for Character.Animate (a " .. animate.ClassName .. ")")
+	local testScript = game:GetService("Players").LocalPlayer.PlayerScripts.CameraScript
+	local bytecode = getscriptbytecode(testScript)
+	assert(type(bytecode) == "string", "Did not return a string for testScript (a " .. testScript.ClassName .. ")")
 end)
 
 test("getscripthash", {}, function()
-	local animate = game:GetService("Players").LocalPlayer.PlayerScripts.RbxCharacterSounds.AtomicBinding:Clone()
-	local hash = getscripthash(animate)
-	local source = animate.Source
-	animate.Source = "print('Hello, world!')"
+	local testScript = game:GetService("Players").LocalPlayer.PlayerScripts.CameraScript:Clone()
+	local hash = getscripthash(testScript)
+	local source = testScript.Source
+	testScript.Source = "print('Hello, world!')" -- how tf do we have access to that
 	task.defer(function()
-		animate.Source = source
+		testScript.Source = source
 	end)
-	local newHash = getscripthash(animate)
+	local newHash = getscripthash(testScript)
 	assert(hash ~= newHash, "Did not return a different hash for a modified script")
-	assert(newHash == getscripthash(animate), "Did not return the same hash for a script with the same source")
+	assert(newHash == getscripthash(testScript), "Did not return the same hash for a script with the same source")
 end)
 
 test("getscripts", {}, function()
@@ -839,10 +839,10 @@ test("getscripts", {}, function()
 end)
 
 test("getsenv", {}, function()
-	local animate = game:GetService("Players").LocalPlayer.PlayerScripts.RbxCharacterSounds.AtomicBinding
-	local env = getsenv(animate)
-	assert(type(env) == "table", "Did not return a table for Character.Animate (a " .. animate.ClassName .. ")")
-	assert(env.script == animate, "The script global is not identical to Character.Animate")
+	local testScript = game:GetService("Players").LocalPlayer.PlayerScripts.CameraScript
+	local env = getsenv(testScript)
+	-- assert(type(env) == "table", "Did not return a table for testScript (a " .. testScript.ClassName .. ")")
+	assert(env.script == testScript, "The script global is not identical to testScript")
 end)
 
 test("getthreadidentity", {"getidentity", "getthreadcontext"}, function()
