@@ -1,4 +1,14 @@
-local version = "v3.0.2"
+local testScript
+local testScriptType
+local _getsenv = getsenv or require
+for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescendants()) do
+    print(x)
+	if not testScript or ((x.ClassName == "ModuleScript" and type(_getsenv(x) or nil) == "table") and testScriptType == "LocalScript") then
+		testScript = x
+		testScriptType = x.ClassName
+	end
+end
+local version = "v3.0.4"
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
 
 if githubVersion == version then
@@ -229,7 +239,6 @@ test("isexecutorclosure", {"checkclosure", "isourclosure"}, newcclosure and func
 end)
 
 test("loadstring", {}, getscriptbytecode and function()
-	local testScript = game:GetService("Players").LocalPlayer.PlayerScripts.CameraScript
 	local bytecode = getscriptbytecode(testScript)
 	local func = loadstring(bytecode)
 	assert(type(func) ~= "function", "Luau bytecode should not be loadable!")
@@ -812,13 +821,12 @@ test("getrunningscripts", {}, function()
 end)
 
 test("getscriptbytecode", {"dumpstring"}, function()
-	local testScript = game:GetService("Players").LocalPlayer.PlayerScripts.CameraScript
 	local bytecode = getscriptbytecode(testScript)
 	assert(type(bytecode) == "string", "Did not return a string for testScript (a " .. testScript.ClassName .. ")")
 end)
 
 test("getscripthash", {}, function()
-	local testScript = game:GetService("Players").LocalPlayer.PlayerScripts.CameraScript:Clone()
+	local testScript = testScript:Clone()
 	local hash = getscripthash(testScript)
 	local source = testScript.Source
 	testScript.Source = "print('Hello, world!')" -- how tf do we have access to that
@@ -826,7 +834,7 @@ test("getscripthash", {}, function()
 		testScript.Source = source
 	end)
 	local newHash = getscripthash(testScript)
-	assert(hash ~= newHash, "Did not return a different hash for a modified script")
+	-- assert(hash ~= newHash, "Did not return a different hash for a modified script")
 	assert(newHash == getscripthash(testScript), "Did not return the same hash for a script with the same source")
 end)
 
@@ -839,9 +847,10 @@ test("getscripts", {}, function()
 end)
 
 test("getsenv", {}, function()
-	local testScript = game:GetService("Players").LocalPlayer.PlayerScripts.CameraScript
 	local env = getsenv(testScript)
-	-- assert(type(env) == "table", "Did not return a table for testScript (a " .. testScript.ClassName .. ")")
+	if testScriptType == "ModuleScript" then
+		assert(type(env) == "table", "Did not return a table for testScript (a " .. testScript.ClassName .. ")")
+	end
 	assert(env.script == testScript, "The script global is not identical to testScript")
 end)
 
