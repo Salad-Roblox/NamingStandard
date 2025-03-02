@@ -2,7 +2,6 @@ local testScript
 local testScriptType
 local _getsenv = getsenv or require
 for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescendants()) do
-    print(x)
 	if not testScript or ((x.ClassName == "ModuleScript" and type(_getsenv(x) or nil) == "table") and testScriptType == "LocalScript") then
 		testScript = x
 		testScriptType = x.ClassName
