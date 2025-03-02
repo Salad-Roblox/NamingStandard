@@ -7,7 +7,7 @@ for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescen
 		testScriptType = x.ClassName
 	end
 end
-local version = "v3.0.5"
+local version = "v3.1.0"
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
 
 if githubVersion == version then
@@ -579,11 +579,10 @@ end)
 
 test("firesignal", {}, function()
 	local button = Instance.new("TextButton")
-	local new = true
-	button.MouseButton1Click:Connect(function() new = false end) 
-	firesignal(button.MouseButton1Click)
-	assert(new, "Uses old standard")
+	local ret = false
+	button.MouseButton1Click:Connect(function() ret = true end) 
 	firesignal(button, "MouseButton1Click")
+	assert(ret, "Did not fire signal")
 end)
 
 test("getcallbackvalue", {}, function()
