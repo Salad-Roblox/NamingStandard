@@ -89,19 +89,19 @@ fireproximityprompt(proximityPrompt, false)
 `🪲 Compatibility`
 
 ```lua
-function firesignal(object: Instance, signal: string?, args: any?): ()
+function firesignal(object: Instance, signal: string?, ...): ()
 ```
 
-Dispatches an event to the given Instance. When absent, `event` defaults to "MouseButton1Click".
+Dispatches an event to the given Instance. When `signal` is absent, we use the old standard.
 
 > ### 🪲 Known Issues
-> Some executors don't have the event parameter and use Instance.event instead.
+> Some executors don't have the `signal` parameter and use Instance.signal instead.
 
 ### Parameters
 
  * `object` - The Instance to dispatch to.
- * `signal` - Optional event to fire.
- * `args` - Optional args for event.
+ * `signal` - Event to fire.
+ * `...` - Optional args for event.
 
 ### Example
 
