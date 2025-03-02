@@ -582,6 +582,7 @@ test("firesignal", {}, function()
 	local ret = false
 	button.MouseButton1Click:Connect(function() ret = true end) 
 	firesignal(button, "MouseButton1Click")
+	firesignal(button.MouseButton1Click)
 	assert(ret, "Did not fire signal")
 end)
 
