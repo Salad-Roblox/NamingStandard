@@ -4,6 +4,28 @@ The **debug** library is an extension of the Luau debug library, providing great
 
 ---
 
+## debug.print
+
+```lua
+function debug.print(str: string): Instance
+```
+
+Returns an instance that replicates the console line that debug.print prints to.
+
+### Parameters
+
+ * `str` - The string to be passed to the console
+
+### Example
+
+```lua
+local ln = debug.print("Hello, world!") --> "Hello, world!"
+print(ln) --> Instance
+ln.Text = "Bye, world!" --> "Hello, world!" is changed to "Bye, world!"
+```
+
+---
+
 ## debug.getconstant
 
 `⛔ Exception`
