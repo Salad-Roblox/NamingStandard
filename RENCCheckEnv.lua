@@ -7,7 +7,7 @@ for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescen
 		testScriptType = x.ClassName
 	end
 end
-local version = "v3.1.1"
+local version = "v3.1.2"
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
 
 if githubVersion == version then
@@ -309,7 +309,13 @@ end)
 
 --- Debug
 
-test("debug.print", {}) -- just for some extra info; this would return a hidden instance(kinda like gethui) that would queue changes until the console is opened and stuff
+test("debug.print", {}, function() -- just for some extra info; this would return a hidden instance(kinda like gethui) that would queue changes until the console is opened and stuff
+	local res = debug.print("Testing debug.print..")
+	assert(typeof(res) == "Instance", "debug.print should return an instance")
+	res.Text = res.Text:gsub("Testing", "Tested")
+	res.Text = res.Text:sub(1, #res-1)
+	assert(res.Text == "Tested debug.print.")
+end)
 
 test("debug.getconstant", {}, function()
 	local function test()
