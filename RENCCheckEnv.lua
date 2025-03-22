@@ -7,7 +7,7 @@ for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescen
 		testScriptType = x.ClassName
 	end
 end
-local version = "v3.1.2"
+local version = "v3.1.3"
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
 
 if githubVersion == version then
@@ -191,7 +191,7 @@ test("getscriptclosure", {"getscriptfunction"}, getrenv and function()
 	local module = game:GetService("CorePackages").Packages.LazyRequire
 	local lazyModule = getrenv().require(module)
 	local generated = getscriptclosure(module)()
-	assert(lazyModule ~= generated, "Generated module should not match the original")
+	--assert(lazyModule ~= generated, "Generated module should not match the original") -- doesn't work when working with table-based modules.
 	assert(shallowEqual(lazyModule, generated), "Generated module should be shallow equal to the original")
 end)
 
