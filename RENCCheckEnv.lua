@@ -236,10 +236,12 @@ test("isexecutorclosure", {"checkclosure", "isourclosure"}, newcclosure and func
 	assert(isexecutorclosure(print) == false, "Did not return false for a Roblox global")
 end)
 
-test("loadstring", {}, getscriptbytecode and function()
-	local bytecode = getscriptbytecode(testScript)
-	local func = loadstring(bytecode)
-	assert(type(func) ~= "function", "Luau bytecode should not be loadable!")
+test("loadstring", {}, function()
+	if getscriptbytecode then
+		local bytecode = getscriptbytecode(testScript)
+		local func = loadstring(bytecode)
+		assert(type(func) ~= "function", "Luau bytecode should not be loadable!")
+	end
 	assert(assert(loadstring("return ... + 1"))(1) == 2, "Failed to do simple math")
 	assert(type(select(2, loadstring("f"))) == "string", "Loadstring did not return anything for a compiler error")
 end)
