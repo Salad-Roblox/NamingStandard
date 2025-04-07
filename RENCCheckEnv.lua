@@ -6,7 +6,7 @@ for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescen
 		testScriptType = x.ClassName
 	end
 end
-local version = "v3.2.1"
+local version = "v3.2.2"
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
 
 if githubVersion == version then
@@ -93,6 +93,7 @@ task.defer(function()
 	print("⛔ " .. fails .. " tests failed")
 	print("⚠️ " .. undefined .. " globals are missing aliases")
 	print(version)
+	local n,v=identifyexecutor()print(n,v)
 	print(("Checksum: a3c46ebce%sab%sfa7c4%sedaaef%sab97c0dc5cf51deec89907af5fe8cad5b7%s748"):format(tostring(rate/(rate/2)), tostring(rate/(rate/2)), tostring(rate/(rate/2)), tostring(rate/(rate/2)), tostring(rate/(rate/2)))) -- those who know "you thought" & "sha256" balkan rage german stare BRYCE IN MY HOUSE
 end)
 
