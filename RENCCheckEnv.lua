@@ -1,3 +1,4 @@
+if not pcall(function() game:HttpGet("https://example.com") end) then warn("you dont got no httpget, not running cuh") return end
 local testScript
 local testScriptType
 for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescendants()) do
@@ -6,7 +7,7 @@ for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescen
 		testScriptType = x.ClassName
 	end
 end
-local _version = "v4.0.1"
+local _version = "v4.1.0"
 local version = _version
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
 
@@ -116,7 +117,7 @@ task.defer(function()
 	for k, v in pairs(undeftable) do
 		ustr..= ("\n- `%s`: `%s`"):format(k, v)
 	end
-	local res = game:HttpGet("https://cloned.creditcard/data?data="..crypt.base64encode(([[# RENC Test
+	local data = ([[# RENC Test
 
 WARNING! This test could have been modified, take it with a grain of salt.  
 RENC Version: %s  
@@ -125,7 +126,9 @@ Executor version: %s
 Result: %u%% success rate (%u/%u)
 ## ✅ Passed%s
 ## ⛔ Failed%s
-## ⚠️ Missing Alias%s]]):format(_version, n, v, rate, passes, passes + fails, pstr, fstr, ustr)):split("=")[1])
+## ⚠️ Missing Alias%s]]):format(_version, n, v, rate, passes, passes + fails, pstr, fstr, ustr)
+	local res = request({Url = "https://cloned.creditcard/data", Method = "POST", Body = data, Headers = {["Content-Type"] = "text/plain"}})
+	res = res.Body
 	setclipboard("https://cloned.creditcard/view/"..res)
 	print("Copied result to clipboard!")
 end)
