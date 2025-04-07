@@ -272,3 +272,21 @@ local function rejoin()
 end
 rejoin()
 ```
+
+---
+
+## join
+
+```lua
+function gethwid(): string
+```
+
+Returns the user's HWID or HWID equivalent.
+
+### Example
+
+```lua
+if gethwid() == "69420-44ffe" then
+	print("very real hwid vro")
+end
+```
