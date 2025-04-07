@@ -6,7 +6,7 @@ for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescen
 		testScriptType = x.ClassName
 	end
 end
-local _version = "v4.0.0"
+local _version = "v4.0.1"
 local version = _version
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
 
@@ -53,11 +53,11 @@ local function test(name, aliases, callback) aliases = aliases or {}
 	
 			if success then
 				passes += 1
-				passtable[name] = (message or "Test succeeded")
+				passtable[name] = (message or "Test passed")
 				print("✅ " .. name .. (message and " • " .. message or ""))
 			else
 				fails += 1
-				failtable[name] = "Global was not not found"
+				failtable[name] = (message or "Test failed")
 				warn("⛔ " .. name .. " failed: " .. message)
 			end
 		end
@@ -72,7 +72,7 @@ local function test(name, aliases, callback) aliases = aliases or {}
 	
 		if #undefinedAliases > 0 then
 			undefined += 1
-			undeftable[name] = "Global was not not found"
+			undeftable[name] = (#undefinedAliases > 1 and "Aliases were not found: " or "Alias was not found: ")..table.concat(undefinedAliases, ", ")
 			warn("⚠️ " .. table.concat(undefinedAliases, ", "))
 		end
 
