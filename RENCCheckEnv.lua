@@ -7,7 +7,7 @@ for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescen
 		testScriptType = x.ClassName
 	end
 end
-local version = "v3.1.4"
+local version = "v3.2.0"
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
 
 if githubVersion == version then
@@ -35,7 +35,7 @@ local function getGlobal(path)
 	return value
 end
 
-local function test(name, aliases, callback)
+local function test(name, aliases, callback) aliases = aliases or {}
 	running += 1
 
 	task.spawn(function()
@@ -185,7 +185,7 @@ test("clonefunction", {}, function()
 	assert(test ~= copy, "The clone should not be equal to the original")
 end)
 
-test("getcallingscript", {})
+test("getcallingscript")
 
 test("getscriptclosure", {"getscriptfunction"}, getrenv and function()
 	local module = game:GetService("CorePackages").Packages.LazyRequire
@@ -542,7 +542,7 @@ test("loadfile", {}, writefile and function()
 	assert(select(2, loadfile(".RENC/loadfile.txt")), "Did not return an error message for a compiler error")
 end)
 
-test("dofile", {})
+test("dofile")
 
 -- Input
 
@@ -550,23 +550,23 @@ test("isrbxactive", {"isgameactive"}, function()
 	assert(type(isrbxactive()) == "boolean", "Did not return a boolean value")
 end)
 
-test("mouse1click", {})
+test("mouse1click")
 
-test("mouse1press", {})
+test("mouse1press")
 
-test("mouse1release", {})
+test("mouse1release")
 
-test("mouse2click", {})
+test("mouse2click")
 
-test("mouse2press", {})
+test("mouse2press")
 
-test("mouse2release", {})
+test("mouse2release")
 
-test("mousemoveabs", {})
+test("mousemoveabs")
 
-test("mousemoverel", {})
+test("mousemoverel")
 
-test("mousescroll", {})
+test("mousescroll")
 
 -- Instances
 
@@ -672,7 +672,7 @@ test("setscriptable", {}, isscriptable and function()
 	assert(isscriptable(fire, "size_xml") == false, "⚠️⚠️ setscriptable persists between unique instances ⚠️⚠️")
 end)
 
-test("setrbxclipboard", {})
+test("setrbxclipboard")
 
 test("getplayer", {}, function()
 	assert(getplayer() == game:GetService("Players").LocalPlayer, "Did not return LocalPlayer")
@@ -765,7 +765,7 @@ test("lz4decompress", {}, lz4compress and function()
 	assert(lz4decompress(compressed, #raw) == raw, "Decompression did not return the original string")
 end)
 
-test("messagebox", {})
+test("messagebox")
 
 test("queue_on_teleport", {"queueonteleport"})
 
@@ -783,15 +783,18 @@ end)
 
 test("setclipboard", {"toclipboard"})
 
-test("setfpscap", {}, getfps and function() -- easily fakable, oh well..
-	setfpscap(60)
-	local fps60 = getfps()
-	setfpscap(0)
-	local fps0 = getfps()
-	return fps60 .. " fps @ 60 • " .. fps0 .. " fps @ 0"
-end)
+test("setfpscap")
 
 test("join", {"joingame", "joinplace", "joinserver"})
+
+test("gethwid", {}, function()
+	local hwid = gethwid() or nil
+	local same = false
+	task.spawn(coroutine.wrap(function()same=(gethwid()==hwid)end))
+	assert(same, "Did not return a consistent value")
+	assert(hwid, "Did not return a valid HWID")
+	assert(hwid == game:GetService("RbxAnalyticsService"):GetClientId(), "Did not return a valid HWID") -- could've at least hashed it for free points vro
+end)
 
 -- Scripts
 
@@ -875,7 +878,7 @@ end)
 
 -- Drawing
 
-test("Drawing", {})
+test("Drawing")
 
 test("Drawing.new", {}, function()
 	local drawing = Drawing.new("Square")
@@ -906,7 +909,7 @@ end)
 
 -- WebSocket
 
-test("WebSocket", {})
+test("WebSocket")
 
 test("WebSocket.connect", {}, function()
 	local types = {
