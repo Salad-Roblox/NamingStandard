@@ -7,7 +7,7 @@ for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescen
 		testScriptType = x.ClassName
 	end
 end
-local _version = "v4.1.0"
+local _version = "v4.1.1"
 local version = _version
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
 
@@ -831,7 +831,7 @@ test("gethwid", {}, function()
 	task.spawn(coroutine.wrap(function()same=(gethwid()==hwid)end))
 	assert(same, "Did not return a consistent value")
 	assert(hwid, "Did not return a valid HWID")
-	assert(hwid == game:GetService("RbxAnalyticsService"):GetClientId(), "Did not return a valid HWID") -- could've at least hashed it for free points vro
+	assert(hwid ~= game:GetService("RbxAnalyticsService"):GetClientId(), "Did not return a valid HWID") -- could've at least hashed it for free points vro
 end)
 
 -- Scripts
