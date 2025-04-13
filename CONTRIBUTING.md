@@ -10,9 +10,9 @@
 
 * Functions must be named appropriately, if you are contributing one - the following criteria applies for the naming:
   * No brand names should be visible in your documentation.
-    * This also includes function alias' - RENC aims to be a vanilla naming convention, not a branded one
+    * This also includes function alias' - SNC aims to be a vanilla naming convention, not a branded one
    * The function name must be **descriptive of what the function does**.
-   * Aliases for shortening function names without good reason are *not* allowed. For example, `hookfunc` is not a alias supported by RENC. Function names should be written out in full.
+   * Aliases for shortening function names without good reason are *not* allowed. For example, `hookfunc` is not a alias supported by SNC. Function names should be written out in full.
   
 * The description must be coherent, if the function is basic enough to not warrant one - you may put "N/A" in the description.
 * Functions don't always require an alias, you may just also put N/A in that field.

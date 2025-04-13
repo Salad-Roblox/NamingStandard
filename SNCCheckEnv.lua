@@ -7,16 +7,16 @@ for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescen
 		testScriptType = x.ClassName
 	end
 end
-local _version = "v4.1.1"
+local _version = "v4.1.2"
 local version = _version
-local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/external-naming-convention/RobloxNamingStandard/releases"))[1].tag_name
+local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/Salad-Roblox/NamingStandard/releases"))[1].tag_name
 
 if githubVersion == version then
-	version = "Your RENCCheckEnv.lua is up to date!"
+	version = "Your SNCCheckEnv.lua is up to date!"
 elseif version:split(".")[1] ~= githubVersion:split(".")[1] or version:split(".")[2] ~= githubVersion:split(".")[2] then
-	version = ("New version of RENCCheckEnv.lua available, your current version: %s, new version: %s. Use loadstring to stay up-to-date."):format(version, githubVersion)
+	version = ("New version of SNCCheckEnv.lua available, your current version: %s, new version: %s. Use loadstring to stay up-to-date."):format(version, githubVersion)
 else
-	version = ("New minor version of RENCCheckEnv.lua available, your current version: %s, new version: %s. Use loadstring to stay up-to-date."):format(version, githubVersion)
+	version = ("New minor version of SNCCheckEnv.lua available, your current version: %s, new version: %s. Use loadstring to stay up-to-date."):format(version, githubVersion)
 end
 
 
@@ -85,7 +85,7 @@ end
 
 print("\n")
 
-print("RENC Environment Check")
+print("SNC Environment Check")
 print("✅ - Pass, ⛔ - Fail, ⏺️ - No test, ⚠️ - Missing aliases\n")
 
 task.defer(function()
@@ -96,7 +96,7 @@ task.defer(function()
 
 	print("\n")
 
-	print("RENC Summary")
+	print("SNC Summary")
 	print("✅ Tested with a " .. rate .. "% success rate (" .. outOf .. ")")
 	print("⛔ " .. fails .. " tests failed")
 	print("⚠️ " .. undefined .. " globals are missing aliases")
@@ -117,10 +117,10 @@ task.defer(function()
 	for k, v in pairs(undeftable) do
 		ustr..= ("\n- `%s`: `%s`"):format(k, v)
 	end
-	local data = ([[# RENC Test
+	local data = ([[# SNC Test
 
 WARNING! This test could have been modified, take it with a grain of salt.  
-RENC Version: %s  
+SNC Version: %s  
 Executor name: %s  
 Executor version: %s  
 Result: %u%% success rate (%u/%u)
@@ -490,15 +490,15 @@ end)
 -- Filesystem
 
 if isfolder and makefolder and delfolder then
-	if isfolder(".RENC") then
-		delfolder(".RENC")
+	if isfolder(".SNC") then
+		delfolder(".SNC")
 	end
-	makefolder(".RENC")
+	makefolder(".SNC")
 end
 
 test("readfile", {}, writefile and function()
-	writefile(".RENC/readfile.txt", "success")
-	assert(readfile(".RENC/readfile.txt") == "success", "Did not return the contents of the file")
+	writefile(".SNC/readfile.txt", "success")
+	assert(readfile(".SNC/readfile.txt") == "success", "Did not return the contents of the file")
 end)
 
 local run = true
@@ -510,27 +510,27 @@ for _, x in pairs(requirements) do
     end
 end
 test("listfiles", {}, run and function()
-	makefolder(".RENC/listfiles")
-	writefile(".RENC/listfiles/test_1.txt", "success")
-	writefile(".RENC/listfiles/test_2.txt", "success")
-	local files = listfiles(".RENC/listfiles")
+	makefolder(".SNC/listfiles")
+	writefile(".SNC/listfiles/test_1.txt", "success")
+	writefile(".SNC/listfiles/test_2.txt", "success")
+	local files = listfiles(".SNC/listfiles")
 	assert(#files == 2, "Did not return the correct number of files")
 	assert(isfile(files[1]), "Did not return a file path")
 	assert(readfile(files[1]) == "success", "Did not return the correct files")
-	makefolder(".RENC/listfiles_2")
-	makefolder(".RENC/listfiles_2/test_1")
-	makefolder(".RENC/listfiles_2/test_2")
-	local folders = listfiles(".RENC/listfiles_2")
+	makefolder(".SNC/listfiles_2")
+	makefolder(".SNC/listfiles_2/test_1")
+	makefolder(".SNC/listfiles_2/test_2")
+	local folders = listfiles(".SNC/listfiles_2")
 	assert(#folders == 2, "Did not return the correct number of folders")
 	assert(isfolder(folders[1]), "Did not return a folder path")
 end)
 
 test("writefile", {}, (readfile and isfile) and function()
-	writefile(".RENC/writefile.txt", "success")
-	assert(readfile(".RENC/writefile.txt") == "success", "Did not write the file")
+	writefile(".SNC/writefile.txt", "success")
+	assert(readfile(".SNC/writefile.txt") == "success", "Did not write the file")
 	local requiresFileExt = pcall(function()
-		writefile(".RENC/writefile", "success")
-		assert(isfile(".RENC/writefile.txt"))
+		writefile(".SNC/writefile", "success")
+		assert(isfile(".SNC/writefile.txt"))
 	end)
 	if not requiresFileExt then
 		return "This executor requires a file extension in writefile"
@@ -538,46 +538,46 @@ test("writefile", {}, (readfile and isfile) and function()
 end)
 
 test("makefolder", {}, isfolder and function()
-	makefolder(".RENC/makefolder")
-	assert(isfolder(".RENC/makefolder"), "Did not create the folder")
+	makefolder(".SNC/makefolder")
+	assert(isfolder(".SNC/makefolder"), "Did not create the folder")
 end)
 
 test("appendfile", {}, (writefile and readfile) and function()
-	writefile(".RENC/appendfile.txt", "su")
-	appendfile(".RENC/appendfile.txt", "cce")
-	appendfile(".RENC/appendfile.txt", "ss")
-	assert(readfile(".RENC/appendfile.txt") == "success", "Did not append the file")
+	writefile(".SNC/appendfile.txt", "su")
+	appendfile(".SNC/appendfile.txt", "cce")
+	appendfile(".SNC/appendfile.txt", "ss")
+	assert(readfile(".SNC/appendfile.txt") == "success", "Did not append the file")
 end)
 
 test("isfile", {}, writefile and function()
-	writefile(".RENC/isfile.txt", "success")
-	assert(isfile(".RENC/isfile.txt") == true, "Did not return true for a file")
-	assert(isfile(".RENC") == false, "Did not return false for a folder")
-	assert(isfile(".RENC/doesnotexist.exe") == false, "Did not return false for a nonexistent path (got " .. tostring(isfile(".RENC/doesnotexist.exe")) .. ")")
+	writefile(".SNC/isfile.txt", "success")
+	assert(isfile(".SNC/isfile.txt") == true, "Did not return true for a file")
+	assert(isfile(".SNC") == false, "Did not return false for a folder")
+	assert(isfile(".SNC/doesnotexist.exe") == false, "Did not return false for a nonexistent path (got " .. tostring(isfile(".SNC/doesnotexist.exe")) .. ")")
 end)
 
 test("isfolder", {}, function()
-	assert(isfolder(".RENC") == true, "Did not return false for a folder")
-	assert(isfolder(".RENC/doesnotexist.exe") == false, "Did not return false for a nonexistent path (got " .. tostring(isfolder(".RENC/doesnotexist.exe")) .. ")")
+	assert(isfolder(".SNC") == true, "Did not return false for a folder")
+	assert(isfolder(".SNC/doesnotexist.exe") == false, "Did not return false for a nonexistent path (got " .. tostring(isfolder(".SNC/doesnotexist.exe")) .. ")")
 end)
 
 test("delfolder", {}, (makefolder and isfolder) and function()
-	makefolder(".RENC/delfolder")
-	delfolder(".RENC/delfolder")
-	assert(isfolder(".RENC/delfolder") == false, "Failed to delete folder (isfolder = " .. tostring(isfolder(".RENC/delfolder")) .. ")")
+	makefolder(".SNC/delfolder")
+	delfolder(".SNC/delfolder")
+	assert(isfolder(".SNC/delfolder") == false, "Failed to delete folder (isfolder = " .. tostring(isfolder(".SNC/delfolder")) .. ")")
 end)
 
 test("delfile", {}, (writefile and isfile) and function()
-	writefile(".RENC/delfile.txt", "Hello, world!")
-	delfile(".RENC/delfile.txt")
-	assert(isfile(".RENC/delfile.txt") == false, "Failed to delete file (isfile = " .. tostring(isfile(".RENC/delfile.txt")) .. ")")
+	writefile(".SNC/delfile.txt", "Hello, world!")
+	delfile(".SNC/delfile.txt")
+	assert(isfile(".SNC/delfile.txt") == false, "Failed to delete file (isfile = " .. tostring(isfile(".SNC/delfile.txt")) .. ")")
 end)
 
 test("loadfile", {}, writefile and function()
-	writefile(".RENC/loadfile.txt", "return ... + 1")
-	assert(assert(loadfile(".RENC/loadfile.txt"))(1) == 2, "Failed to load a file with arguments")
-	writefile(".RENC/loadfile.txt", "f")
-	assert(select(2, loadfile(".RENC/loadfile.txt")), "Did not return an error message for a compiler error")
+	writefile(".SNC/loadfile.txt", "return ... + 1")
+	assert(assert(loadfile(".SNC/loadfile.txt"))(1) == 2, "Failed to load a file with arguments")
+	writefile(".SNC/loadfile.txt", "f")
+	assert(select(2, loadfile(".SNC/loadfile.txt")), "Did not return an error message for a compiler error")
 end)
 
 test("dofile")
@@ -661,8 +661,8 @@ test("getconnections", {}, function()
 end)
 
 test("getcustomasset", {}, writefile and function()
-	writefile(".RENC/getcustomasset.txt", "success")
-	local contentId = getcustomasset(".RENC/getcustomasset.txt")
+	writefile(".SNC/getcustomasset.txt", "success")
+	local contentId = getcustomasset(".SNC/getcustomasset.txt")
 	assert(type(contentId) == "string", "Did not return a string")
 	assert(#contentId > 0, "Returned an empty string")
 	assert(string.match(contentId, "rbxasset://") == "rbxasset://", "Did not return an rbxasset url")
