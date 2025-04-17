@@ -7,7 +7,7 @@ for _, x in pairs(game:GetService("Players").LocalPlayer.PlayerScripts:GetDescen
 		testScriptType = x.ClassName
 	end
 end
-local _version = "v4.1.2"
+local _version = "v4.2.0"
 local version = _version
 local githubVersion = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.github.com/repos/Salad-Roblox/NamingStandard/releases"))[1].tag_name
 
@@ -44,22 +44,23 @@ local function test(name, aliases, callback) aliases = aliases or {}
         if not getGlobal(name) then
 			fails += 1
 			failtable[name] = "Global was not not found"
-			warn("⛔ " .. name .. " failed: Global was not not found")
+			warn(("⛔ %s failed: Global was not not found"):format(name))
 		elseif not callback then
 			passes += 1
 			passtable[name] = "Untested"
-			print("⏺️ " .. name)
+			print(("⏺️ %s"):format(name))
 		else
+			local t = tick()
 			local success, message = pcall(callback, getgenv()[name])
 	
 			if success then
 				passes += 1
-				passtable[name] = (message or "Test passed")
-				print("✅ " .. name .. (message and " • " .. message or ""))
+				passtable[name] = ("%s` - `%.2fms"):format(message or "Test passed", tick()-t)
+				print(("✅ %s%s - %.2fms"):format(name, (message and " • " .. message or ""), tick()-t))
 			else
 				fails += 1
-				failtable[name] = (message or "Test failed")
-				warn("⛔ " .. name .. " failed: " .. message)
+				passtable[name] = ("%s` - `%.2fms"):format(message or "Test failed", tick()-t)
+				warn(("⛔ %s failed: %s - %.2fms"):format(name, message, tick()-t))
 			end
 		end
 	
@@ -73,8 +74,8 @@ local function test(name, aliases, callback) aliases = aliases or {}
 	
 		if #undefinedAliases > 0 then
 			undefined += 1
-			undeftable[name] = (#undefinedAliases > 1 and "Aliases were not found: " or "Alias was not found: ")..table.concat(undefinedAliases, ", ")
-			warn("⚠️ " .. table.concat(undefinedAliases, ", "))
+			undeftable[name] = ("%s not found: %s"):format(#undefinedAliases > 1 and "Aliases were" or "Alias was", table.concat(undefinedAliases, ", "))
+			warn(("⚠️ %s"):format(table.concat(undefinedAliases, ", ")))
 		end
 
 		running -= 1
@@ -127,9 +128,9 @@ Result: %u%% success rate (%u/%u)
 ## ✅ Passed%s
 ## ⛔ Failed%s
 ## ⚠️ Missing Alias%s]]):format(_version, n, v, rate, passes, passes + fails, pstr, fstr, ustr)
-	local res = request({Url = "https://cloned.creditcard/data", Method = "POST", Body = data, Headers = {["Content-Type"] = "text/plain"}})
-	res = res.Body
-	setclipboard("https://cloned.creditcard/view/"..res)
+	local res = request({Url = "https://api.rubis.app/v2/scrap?public=true", Method = "POST", Body = data, Headers = {["Content-Type"] = "text/plain"}})
+	res = game:GetService("HttpService"):JSONDecode(res.Body)
+	setclipboard(res.view.."&type=markdown")
 	print("Copied result to clipboard!")
 end)
 
